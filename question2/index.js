@@ -1,15 +1,34 @@
-
+const https = require('https')
 
 //  function that handles getting the movies from the api
 async function sendRequest(substr, pageNumber = 0) {
-    const response = await fetch(`https://jsonmock.hackerrank.com/api/moviesdata/search/?Title=${substr}&page=${pageNumber}`, { method: "GET" })
-    return await response.json()
+
+    const path = `https://jsonmock.hackerrank.com/api/moviesdata/search/?Title=${substr}&page=${pageNumber}`
+    const options = {
+        hostname: "jsonmock.hackerrank.com",
+        path: path
+    }
+    // using promise to allow me use async await with the http module
+    return new Promise(function (resolve, reject) {
+        https.request(options, function (response) {
+            var str = '';
+
+            // parse chunk of data to str
+            response.on('data', function (chunk) { str += chunk });
+            // convert data to json
+            response.on('end', function () { resolve(JSON.parse(str)) });
+            // handle error
+            response.on('error', (error) => reject(error))
+
+        }).end();
+    })
 }
 
 async function getMovies(substr = "") {
     try {
         // send initial http request
         const data = await sendRequest(substr)
+
         let movies = [...data.data]
 
         // get all movies in from the pages if the total_page is greater than 2
@@ -26,14 +45,16 @@ async function getMovies(substr = "") {
 
     } catch (error) {
         console.log('something went wrong!')
+        console.log(error)
     }
 }
 
-// handle input via terminal 
 console.log('')
 console.log("Please input your search query:")
+
+// handle input via terminal 
 process.stdin.on('data', function (query) {
-    query = query.toString()
+    query = query.toString().trim()
     console.log('Searching...')
     getMovies(query)
 })
