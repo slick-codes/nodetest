@@ -1,5 +1,3 @@
-
-
 let boardStore = []
 
 
@@ -43,7 +41,6 @@ module.exports.updateBoards = function (req, res) {
             res.writeHead(400)
             res.end()
         }
-
 
     } catch (error) {
         res.end("something went wrong!")
