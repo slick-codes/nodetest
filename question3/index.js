@@ -24,4 +24,12 @@ function inventoryList() {
     }
 }
 
-const inventory = inventoryList()
+
+// Userage
+
+// const inventory = inventoryList()
+
+// inventory.add('Shirt')
+// inventory.add('Trouser')
+// inventory.remove('Shirt')
+// console.log(inventory.getList())
